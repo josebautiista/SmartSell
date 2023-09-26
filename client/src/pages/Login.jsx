@@ -11,13 +11,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import MuiAlert from "@mui/material/Alert";
+import { conexion, port } from "../conexion";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
+  port;
   const handleSnackbarOpen = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -26,14 +27,18 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/user/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `http://${conexion}:${port}/user/login`,
+        {
+          username,
+          password,
+        }
+      );
+      console.log(response.data.token);
       const token = response.data.token;
       console.log("Inicio de sesión exitoso");
       handleSnackbarOpen(response.data.message, "success");
-      console.log("Token:", token);
+      console.log("Token:", response.data.token);
     } catch (error) {
       handleSnackbarOpen(
         JSON.parse(error.request.responseText).message,
@@ -46,7 +51,7 @@ const Login = () => {
     <Container maxWidth="xs">
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
