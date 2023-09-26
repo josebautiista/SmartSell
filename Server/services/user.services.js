@@ -1,78 +1,48 @@
-// services/userService.js
 const bcrypt = require("bcrypt");
-const connection = require("../db");
 const jwt = require("jsonwebtoken");
+const userRepository = require("../repositories/users.repositories");
+const userRoleRepository = require("../repositories/roles.repositories");
 
 exports.login = async (username, password) => {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      "SELECT * FROM users WHERE username = ?",
-      [username],
-      async (error, results) => {
-        if (error) {
-          reject(error);
-        } else if (results.length === 0) {
-          reject("Nombre de usuario o contraseña incorrectos");
-        } else {
-          const isPasswordValid = await bcrypt.compare(
-            password,
-            results[0].password
-          );
-          if (!isPasswordValid) {
-            reject("Nombre de usuario o contraseña incorrectos");
-          } else {
-            const token = jwt.sign({ userId: results[0].id }, "secret", {
-              expiresIn: "1h",
-            });
-            resolve(token);
-          }
-        }
-      }
-    );
+  const messages = { success: [], error: [] }; // Objeto para mensajes
+
+  const user = await userRepository.findByUsername(username);
+  if (!user) {
+    messages.error.push("Nombre de usuario o contraseña incorrectos");
+    return messages; // Devuelve el objeto de mensajes
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    messages.error.push("Nombre de usuario o contraseña incorrectos");
+    return messages; // Devuelve el objeto de mensajes
+  }
+
+  const token = jwt.sign({ userId: user.user_id }, "secret", {
+    expiresIn: "1h",
   });
+
+  messages.success.push("Inicio de sesión exitoso");
+  messages.token = token; // Agrega el token al objeto de mensajes
+
+  return messages; // Devuelve el objeto de mensajes
 };
 
-exports.registerUser = (username, password, nombre, role_id) => {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      "SELECT * FROM users WHERE username = ?",
-      [username],
-      (error, results) => {
-        if (error) {
-          reject(error);
-        } else if (results.length > 0) {
-          reject("El nombre de usuario ya está en uso.");
-        } else {
-          bcrypt.hash(password, 10, (err, hash) => {
-            if (err) {
-              reject(err);
-            } else {
-              connection.query(
-                "INSERT INTO users (username, password, nombre) VALUES (?, ?, ?)",
-                [username, hash, nombre],
-                (error, userInsertResult) => {
-                  if (error) {
-                    reject(error);
-                  } else {
-                    const userId = userInsertResult.insertId;
-                    connection.query(
-                      "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
-                      [userId, role_id],
-                      (error) => {
-                        if (error) {
-                          reject(error);
-                        } else {
-                          resolve("Usuario registrado exitosamente.");
-                        }
-                      }
-                    );
-                  }
-                }
-              );
-            }
-          });
-        }
-      }
-    );
-  });
+exports.registerUser = async (username, password, nombre, role_id) => {
+  const messages = { success: [], error: [] }; // Objeto para mensajes
+
+  const existingUser = await userRepository.findByUsername(username);
+  if (existingUser) {
+    messages.error.push("El nombre de usuario ya está en uso.");
+    return messages; // Devuelve el objeto de mensajes
+  }
+
+  const userId = await userRepository.createUser(username, password, nombre);
+
+  await userRoleRepository.assignRoleToUser(userId, role_id);
+
+  messages.success.push("Usuario registrado exitosamente");
+
+  return messages; // Devuelve el objeto de mensajes
 };

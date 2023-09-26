@@ -1,4 +1,3 @@
-// controllers/userController.js
 const { validationResult } = require("express-validator");
 const UserService = require("../services/user.services");
 
@@ -11,11 +10,15 @@ exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const token = await UserService.login(username, password);
-    res.status(200).json({ token, message: "Inicio de sesión exitoso" });
+    const result = await UserService.login(username, password);
+    if (result.error.length > 0) {
+      res.status(401).json({ message: result.error });
+    } else {
+      res.status(200).json({ token: result.token, message: result.success });
+    }
   } catch (error) {
     console.error("Error en el inicio de sesión:", error);
-    res.status(401).json({ message: error });
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 };
 
@@ -23,15 +26,19 @@ exports.register = async (req, res) => {
   const { username, password, nombre, role_id } = req.body;
 
   try {
-    const message = await UserService.registerUser(
+    const result = await UserService.registerUser(
       username,
       password,
       nombre,
       role_id
     );
-    res.status(201).json({ message });
+    if (result.error.length > 0) {
+      res.status(400).json({ message: result.error });
+    } else {
+      res.status(201).json({ message: result.success });
+    }
   } catch (error) {
     console.error("Error en el registro de usuario:", error);
-    res.status(400).json({ message: error });
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 };

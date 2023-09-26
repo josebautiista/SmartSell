@@ -1,8 +1,10 @@
-//user.repositories.js
-const connection = require("../db");
+// repositories/userRepository.js
 
-module.exports = {
-  getUserByUsername: (username) => {
+const connection = require("../db");
+const bcrypt = require("bcrypt");
+
+class UserRepository {
+  async findByUsername(username) {
     return new Promise((resolve, reject) => {
       connection.query(
         "SELECT * FROM users WHERE username = ?",
@@ -10,17 +12,16 @@ module.exports = {
         (error, results) => {
           if (error) {
             reject(error);
-            console.error("Error en getUserByUsername:", error); // Agregamos un registro de depuración
           } else {
-            resolve(results);
-            console.log("Resultados de getUserByUsername:", results); // Agregamos un registro de depuración
+            resolve(results[0] || null);
           }
         }
       );
     });
-  },
+  }
 
-  insertUser: (username, hashedPassword, nombre) => {
+  async createUser(username, password, nombre) {
+    const hashedPassword = await bcrypt.hash(password, 10);
     return new Promise((resolve, reject) => {
       connection.query(
         "INSERT INTO users (username, password, nombre) VALUES (?, ?, ?)",
@@ -29,10 +30,13 @@ module.exports = {
           if (error) {
             reject(error);
           } else {
-            resolve(userInsertResult.insertId); // Devuelve el ID del usuario insertado
+            const userId = userInsertResult.insertId;
+            resolve(userId);
           }
         }
       );
     });
-  },
-};
+  }
+}
+
+module.exports = new UserRepository();
