@@ -1,29 +1,28 @@
-// repositories/userRepository.js
-
 const connection = require("../db");
 const bcrypt = require("bcrypt");
 
 class UserRepository {
+  constructor(connection) {
+    this.connection = connection;
+  }
+
   async findByUsername(username) {
+    const consult = "SELECT * FROM users WHERE username = ?";
     return new Promise((resolve, reject) => {
-      connection.query(
-        "SELECT * FROM users WHERE username = ?",
-        [username],
-        (error, results) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(results[0] || null);
-          }
+      this.connection.query(consult, [username], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result[0]);
         }
-      );
+      });
     });
   }
 
   async createUser(username, password, nombre) {
     const hashedPassword = await bcrypt.hash(password, 10);
     return new Promise((resolve, reject) => {
-      connection.query(
+      this.connection.query(
         "INSERT INTO users (username, password, nombre) VALUES (?, ?, ?)",
         [username, hashedPassword, nombre],
         (error, userInsertResult) => {
@@ -39,4 +38,4 @@ class UserRepository {
   }
 }
 
-module.exports = new UserRepository();
+module.exports = UserRepository;

@@ -1,45 +1,44 @@
-/* eslint-disable react/prop-types */
 import {
   Button,
   Container,
   Grid,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import MuiAlert from "@mui/material/Alert";
-import { Snackbar } from "@mui/material";
-
+import { conexion, port } from "../conexion";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
+  port;
   const handleSnackbarOpen = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setOpenSnackbar(true);
   };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/user/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `http://${conexion}:${port}/user/login`,
+        {
+          username,
+          password,
+        }
+      );
+      console.log(response.data.token);
       const token = response.data.token;
       console.log("Inicio de sesión exitoso");
-      console.log(response);
       handleSnackbarOpen(response.data.message, "success");
-      localStorage.setItem("token", token);
-      setTimeout(() => {
-        location.reload();
-      }, 500);
+      console.log("Token:", response.data.token);
     } catch (error) {
       handleSnackbarOpen(
         JSON.parse(error.request.responseText).message,
@@ -78,7 +77,6 @@ const Login = () => {
                 variant="outlined"
                 size="small"
                 required
-                value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </Grid>
@@ -90,7 +88,6 @@ const Login = () => {
                 variant="outlined"
                 size="small"
                 required
-                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
@@ -104,6 +101,11 @@ const Login = () => {
               >
                 Iniciar Sesión
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Link to="/registro">Registrarse</Link>
+              {" | "}
+              <Link to="/olvido-contrasena">¿Olvidaste tu contraseña?</Link>
             </Grid>
           </Grid>
         </form>
