@@ -1,17 +1,14 @@
-/* eslint-disable react/prop-types */
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import Axios from "axios";
-// import Mesa from "./Mesa";
+import Mesa from "./Mesa";
 import { styled } from "styled-components";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
-import { localURL } from "../components/conexion";
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -35,52 +32,50 @@ const PaperMesa = styled(Paper)`
   justify-content: space-between;
 `;
 
-export default function Mesas({ obtenerInformacionDelUsuario }) {
+export default function Mesas() {
   const [mesas, setMesas] = useState([]);
-  //   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  useEffect(() => {
-    obtenerInformacionDelUsuario();
-  }, []);
-  //   const handleOpen = () => {
-  //     setOpen(true);
-  //   };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  //   const añadirMesa = () => {
-  //     setDialogOpen(true);
-  //   };
+  const añadirMesa = () => {
+    setDialogOpen(true);
+  };
+  const mesasAPI = [
+    { mesa_id: 1, estado: "Disponible" },
+    { mesa_id: 2, estado: "No Disponible" },
+    { mesa_id: 3, estado: "Disponible" },
+    { mesa_id: 4, estado: "No Disponible" },
+    { mesa_id: 5, estado: "Disponible" },
+    { mesa_id: 6, estado: "No Disponible" },
+    { mesa_id: 7, estado: "Disponible" },
+    { mesa_id: 8, estado: "No Disponible" },
+    { mesa_id: 9, estado: "Disponible" },
+    { mesa_id: 10, estado: "No Disponible" },
+  ];
+
   const confirmarAñadirMesa = () => {
-    Axios.post(`http://${localURL}:3000/mesas`, {
+    const nuevaMesa = {
+      mesa_id: mesas.length + 1,
       capacidad: 4,
       estado: "Disponible",
-    })
-      .then(() => {
-        console.log("mesa agregada correctamente");
-        handleCloseDialog(); // Cerrar la ventana de diálogo después de añadir la mesa
-      })
-      .catch((error) => {
-        console.error("Error al crear la nueva mesa:", error);
-        handleCloseDialog(); // Cerrar la ventana de diálogo en caso de error también
-      });
+    };
+
+    setMesas([...mesas, nuevaMesa]);
+
+    console.log("Mesa agregada correctamente");
+    handleCloseDialog();
   };
 
   useEffect(() => {
-    // Función para obtener las mesas desde el servidor
-    // const getMesas = () => {
-    //   Axios.get(`http://${localURL}:3000/mesas`).then((response) => {
-    //     setMesas(response.data);
-    //   });
-    // };
-    // // Obtener las mesas al montar el componente
-    // getMesas();
-    // // Configurar la función de polling para obtener las mesas cada 5 segundos
-    // const interval = setInterval(getMesas, 100);
-    // // Limpiar el intervalo al desmontar el componente
-    // return () => clearInterval(interval);
+    setMesas(mesasAPI);
   }, []);
 
   return (
@@ -88,17 +83,17 @@ export default function Mesas({ obtenerInformacionDelUsuario }) {
       {mesas.map((mesa, index) => (
         <PaperMesa
           elevation={3}
-          key={index} // Aquí está la clave correctamente aplicada
+          key={index}
           sx={{
             backgroundColor:
               mesa.estado === "Disponible" ? "#4a6f20" : "#7b1104",
           }}
-          //   onClick={handleOpen}
+          onClick={handleOpen}
         >
           <Typography variant="h5" sx={{ color: "black" }}>
             Mesa {mesa.mesa_id}
           </Typography>
-          {/* <Mesa open={open} setOpen={setOpen} id={mesa.mesa_id} /> */}
+          <Mesa open={open} setOpen={setOpen} id={mesa.mesa_id} />
         </PaperMesa>
       ))}
       <Dialog
@@ -143,15 +138,7 @@ export default function Mesas({ obtenerInformacionDelUsuario }) {
           background: "#4a6f20",
         }}
       >
-        {/* <AddIcon
-          sx={{
-            width: "80%",
-            height: "80%",
-            color: "white",
-            cursor: "pointer",
-          }}
-          onClick={añadirMesa}
-        /> */}
+        <p onClick={añadirMesa}>+</p>
       </PaperMesa>
     </StyledBox>
   );

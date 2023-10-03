@@ -1,11 +1,11 @@
 import Login from "../src/pages/Login.jsx";
-import Mesas from "../src/pages/Mesas.jsx";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Mesas from "./components/Mesas.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Registro from "../src/pages/Registro.jsx";
 import { useState } from "react";
 import axios from "axios";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
-
+import Menu from "./components/Menu.jsx";
 function parseJwt(token) {
   if (!token) {
     return null;
@@ -37,7 +37,7 @@ if (token) {
 
 const App = () => {
   const [user, setUser] = useState(null);
-
+  console.log(user);
   async function obtenerInformacionDelUsuario() {
     const token = localStorage.getItem("token");
     console.log(token);
@@ -63,9 +63,10 @@ const App = () => {
   return (
     <>
       <Router>
-        <li>
-          <Link to="/Registro">Dashboard</Link>
-        </li>
+        <Menu
+          user={user}
+          obtenerInformacionDelUsuario={obtenerInformacionDelUsuario}
+        />
         <Routes>
           <Route
             path="/"
