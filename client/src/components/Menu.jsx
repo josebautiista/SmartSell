@@ -12,9 +12,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
 
 export default function Menu({ user, obtenerInformacionDelUsuario }) {
-  obtenerInformacionDelUsuario();
+  useEffect(() => {
+    obtenerInformacionDelUsuario();
+  }, []);
+
   const navigate = useNavigate();
   const [state, setState] = React.useState({
     left: false,
@@ -73,16 +78,16 @@ export default function Menu({ user, obtenerInformacionDelUsuario }) {
                 edge="start"
                 color="inherit"
                 aria-label="menu"
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, outline: "none" }}
                 onClick={toggleDrawer("left", true)}
               >
-                menu
+                <AiOutlineMenu />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 SmartSell
               </Typography>
               <Button color="inherit">
-                {user ? "Hola," + user.username : "Login"}
+                {user ? "Hola, " + user.username : "Login"}
               </Button>
             </Toolbar>
           </AppBar>

@@ -47,7 +47,7 @@ export default function Mesa({ id }) {
         <Box sx={{ ...style, paddingRight: "0px", paddingLeft: "0px" }}>
           <IconButton
             onClick={handleClose}
-            sx={{ position: "absolute", top: "10px", right: "10px" }} // Posiciona el botón de cierre
+            sx={{ position: "absolute", top: "10px", right: "10px" }}
             aria-label="Cerrar"
           >
             <svg

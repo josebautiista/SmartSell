@@ -6,6 +6,9 @@ import { useState } from "react";
 import axios from "axios";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import Menu from "./components/Menu.jsx";
+import Inventario from "./pages/Inventario.jsx";
+import Ventas from "./components/ventas/Ventas.jsx";
+
 function parseJwt(token) {
   if (!token) {
     return null;
@@ -85,8 +88,34 @@ const App = () => {
           <Route
             path="/registro"
             element={
-              <ProtectedRoute isAllowed={!!user && user.role == "Admin"}>
+              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
                 <Registro />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/Mesas"
+            element={
+              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+                <Mesas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Inventario"
+            element={
+              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+                <Inventario />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/Ventas"
+            element={
+              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+                <Ventas />
               </ProtectedRoute>
             }
           />
