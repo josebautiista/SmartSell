@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { IoIosAdd } from "react-icons/io";
+import axios from "axios";
+import { styled } from "styled-components";
 import PropTypes from "prop-types";
 import RestarCantidad from "./RestarCantidad";
-import styled from "styled-components";
+import { localURL } from "../conexion";
 
 const DivCantidad = styled.div`
   width: 30%;
@@ -26,53 +28,65 @@ export default function CantidadProducto({
   producto,
   agregarProducto,
 }) {
-  const [inputValue, setInputValue] = useState(producto.cantidad.toString());
-
-  const modificarCantidad = (producto, nuevaCantidad) => {
+  const modificarCantidad = (producto, cantidad) => {
+    const nuevaCantidad = cantidad;
     if (nuevaCantidad !== null) {
-      setTimeout(() => {
-        setNuevo((prevNuevo) =>
-          prevNuevo.map((pro) =>
-            pro.producto_id === producto.producto_id
-              ? { ...pro, cantidad: nuevaCantidad }
-              : pro
-          )
-        );
-        console.log("Cantidad de producto restada en el carrito.");
-      }, 1000);
+      axios
+        .put(
+          `http://${localURL}:3000/pedido/${selectedTable}/${producto.producto_id}/actualizar_cantidad`,
+          {
+            cantidad: nuevaCantidad,
+          }
+        )
+        .then(() => {
+          // Actualizar el estado local con los datos actualizados de la API
+          setNuevo((prevNuevo) =>
+            prevNuevo.map((pro) =>
+              pro.producto_id === producto.producto_id
+                ? { ...pro, cantidad: nuevaCantidad }
+                : pro
+            )
+          );
+          console.log("Cantidad de producto restada en el carrito.");
+        })
+        .catch((error) => {
+          console.error(
+            "Error al restar la cantidad del producto en el carrito:",
+            error
+          );
+        });
     }
   };
-
-  const handleInputChange = (e) => {
-    const nuevaCantidad = parseInt(e.target.value, 10) || 0;
-    setInputValue(e.target.value);
-    setNuevo((prevAddProducto) =>
-      prevAddProducto.map((pro) =>
-        pro.producto_id === producto.producto_id
-          ? { ...pro, cantidad: nuevaCantidad }
-          : pro
-      )
-    );
-    modificarCantidad(producto, nuevaCantidad);
-  };
-
   return (
     <DivCantidad>
       <RestarCantidad
         setNuevo={setNuevo}
         selectedTable={selectedTable}
         producto={producto}
-      />
+      ></RestarCantidad>
       <InputCantidad
         type="tel"
-        value={inputValue}
-        onChange={handleInputChange}
+        value={producto.cantidad === 0 ? "" : producto.cantidad}
+        onChange={(e) => {
+          const nuevaCantidad = parseInt(e.target.value, 10) || 0;
+          setNuevo((prevAddProducto) =>
+            prevAddProducto.map((pro) =>
+              pro.producto_id === producto.producto_id
+                ? { ...pro, cantidad: nuevaCantidad }
+                : pro
+            )
+          );
+          modificarCantidad(producto, nuevaCantidad);
+        }}
       />
-      <p onClick={() => agregarProducto(producto)}>+</p>
+      <IoIosAdd
+        color="success"
+        sx={{ cursor: "pointer" }}
+        onClick={() => agregarProducto(producto)}
+      />
     </DivCantidad>
   );
 }
-
 CantidadProducto.propTypes = {
   selectedTable: PropTypes.number.isRequired,
   setNuevo: PropTypes.func.isRequired,

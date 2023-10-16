@@ -1,9 +1,12 @@
+import { Paper } from "@mui/material";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Encabezado from "./Encabezado";
 import Izquierdo from "./Izquierdo";
 import Derecho from "./Derecho";
-import { useState, useEffect } from "react";
+import { localURL } from "../conexion";
 
 const DivContenedor = styled.div`
   display: flex;
@@ -37,7 +40,7 @@ const DivCentro = styled.div`
   }
 `;
 
-const Categorias = styled.div`
+const Categorias = styled(Paper)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,49 +55,100 @@ export const Detalles = ({ idMesa }) => {
   const [nuevo, setNuevo] = useState([]);
   const [selectedTable, setSelectedTable] = useState(idMesa);
 
-  const categoriasEstaticas = [
-    {
-      categoria_id: 1,
-      nombre: "Categoria 1",
-    },
-    {
-      categoria_id: 2,
-      nombre: "Categoria 2",
-    },
-    {
-      categoria_id: 3,
-      nombre: "Categoria 3",
-    },
-  ];
-
   useEffect(() => {
-    setCategorias(categoriasEstaticas);
+    axios
+      .get(`http://${localURL}:3000/categorias`)
+      .then(({ data }) => {
+        setCategorias(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
 
   const handleClick = (id) => {
     setCategoriaSeleccionada(id);
   };
 
-  const productosAPI = [
-    {
-      producto_id: 1,
-      nombre: "Producto 1",
-      precio_unitario: 10.99,
-    },
-    {
-      producto_id: 2,
-      nombre: "Producto 2",
-      precio_unitario: 15.49,
-    },
-    {
-      producto_id: 3,
-      nombre: "Producto 3",
-      precio_unitario: 8.99,
-    },
-  ];
+  const obtenerProductosEnCarrito = useCallback(() => {
+    axios
+      .get(`http://${localURL}:3000/pedido/${selectedTable}`)
+      .then(({ data }) => {
+        const productos = data.filter(({ cantidad }) => cantidad > 0);
+        setNuevo(productos);
+      })
+      .catch((error) => {
+        console.error("Error al obtener productos en carrito:", error);
+      });
+  }, [selectedTable]);
+
+  useEffect(() => {
+    obtenerProductosEnCarrito();
+  }, [obtenerProductosEnCarrito]);
 
   const agregarProducto = (producto) => {
-    setNuevo((prevNuevo) => [...prevNuevo, { ...producto, cantidad: 1 }]);
+    // Realizar una solicitud GET a la API para obtener el producto en el carrito actual de la mesa
+    axios
+      .get(
+        `http://${localURL}:3000/pedido/existe/${selectedTable}/${producto.producto_id}`
+      )
+      .then(({ data }) => {
+        const productoEnCarrito = data;
+
+        if (productoEnCarrito) {
+          console.log("existe");
+          // Si el producto ya existe en el carrito, aumentar la cantidad en la API
+          const nuevaCantidad = productoEnCarrito.cantidad + 1;
+          console.log(nuevaCantidad);
+          axios
+            .put(
+              `http://${localURL}:3000/pedido/${selectedTable}/${producto.producto_id}/actualizar_cantidad`,
+              {
+                ...productoEnCarrito,
+                cantidad: nuevaCantidad,
+              }
+            )
+            .then(() => {
+              // Actualizar el estado local con los datos actualizados de la API
+              setNuevo((prevNuevo) =>
+                prevNuevo.map((producto) =>
+                  producto.producto_id === productoEnCarrito.producto_id
+                    ? { ...producto, cantidad: nuevaCantidad }
+                    : producto
+                )
+              );
+              console.log("Cantidad de producto aumentada en el carrito.");
+            })
+            .catch((error) => {
+              console.error(
+                "Error al aumentar la cantidad del producto en el carrito:",
+                error
+              );
+            });
+        } else {
+          // Si el producto no existe en el carrito, agregarlo al carrito en la API
+          axios
+            .post(`http://${localURL}:3000/pedido`, {
+              ...producto,
+              mesa_id: selectedTable,
+              cantidad: 1,
+            })
+            .then(() => {
+              // Actualizar el estado local con los datos actualizados de la API
+              setNuevo((prevNuevo) => [
+                ...prevNuevo,
+                { ...producto, cantidad: 1 },
+              ]);
+              console.log("Producto agregado al carrito.");
+            })
+            .catch((error) => {
+              console.error("Error al agregar el producto al carrito:", error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener el producto en el carrito:", error);
+      });
   };
 
   const formatNumber = (number) => {
@@ -129,11 +183,8 @@ export const Detalles = ({ idMesa }) => {
         ></Izquierdo>
 
         <DivCentro>
-          {categorias.map((cat) => (
-            <Categorias
-              key={cat.categoria_id}
-              onClick={() => handleClick(cat.categoria_id)}
-            >
+          {categorias.map((cat, i) => (
+            <Categorias key={i} onClick={() => handleClick(cat.categoria_id)}>
               {cat.nombre}
             </Categorias>
           ))}

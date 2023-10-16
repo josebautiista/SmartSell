@@ -1,5 +1,7 @@
+import axios from "axios";
 import PropTypes from "prop-types";
 import { styled } from "styled-components";
+import { localURL } from "../conexion";
 
 const InputPrecio = styled.input`
   width: 15%;
@@ -15,7 +17,30 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
   const modificarPrecio = (producto, precio) => {
     const nuevoPrecio = precio;
     if (nuevoPrecio !== null) {
-      console.log("Precio del producto actualizado");
+      axios
+        .put(
+          `http://${localURL}:3000/pedido/${selectedTable}/${producto.producto_id}/actualizar_precio`,
+          {
+            precio_venta: precio,
+          }
+        )
+        .then(() => {
+          // Actualizar el estado local con los datos actualizados de la API
+          setNuevo((prevNuevo) =>
+            prevNuevo.map((pro) =>
+              pro.producto_id === producto.producto_id
+                ? { ...pro, precio_venta: precio }
+                : pro
+            )
+          );
+          console.log("Cantidad de producto restada en el carrito.");
+        })
+        .catch((error) => {
+          console.error(
+            "Error al restar la cantidad del producto en el carrito:",
+            error
+          );
+        });
     }
   };
 
@@ -35,12 +60,11 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
               : prod
           )
         );
-        modificarPrecio(producto, nuevoPrecio);
+        modificarPrecio(producto, nuevoPrecio); // Enviar el producto con el precio cambiado como parámetro
       }}
     />
   );
 }
-
 PrecioProducto.propTypes = {
   setNuevo: PropTypes.func.isRequired,
   producto: PropTypes.shape({

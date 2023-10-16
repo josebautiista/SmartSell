@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { Paper } from "@mui/material";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { localURL } from "../conexion";
 
 const DivDerecho = styled.div`
   width: 40%;
@@ -12,6 +14,9 @@ const DivDerecho = styled.div`
   border-radius: 5px;
   overflow-y: scroll;
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
   flex-wrap: wrap;
   gap: 10px;
   user-select: none;
@@ -19,6 +24,9 @@ const DivDerecho = styled.div`
     display: none;
     width: 100%;
     justify-content: center;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
   }
 `;
 
@@ -39,29 +47,23 @@ export default function Derecho({
 }) {
   const [productos, setProductos] = useState([]);
 
-  const productosAPI = [
-    {
-      nombre: "Producto 1",
-      precio_unitario: 10.99,
-    },
-    {
-      nombre: "Producto 2",
-      precio_unitario: 15.49,
-    },
-    {
-      nombre: "Producto 3",
-      precio_unitario: 8.99,
-    },
-  ];
-
   useEffect(() => {
     if (categoriaSeleccionada) {
-      const productosCategoria = productosAPI.map((producto) => ({
-        ...producto,
-        precio_venta: producto.precio_unitario,
-      }));
+      axios
+        .get(
+          `http://${localURL}:3000/productos/categoria?id=${categoriaSeleccionada}`
+        )
+        .then(({ data }) => {
+          const productos = data.map((producto) => ({
+            ...producto,
+            precio_venta: producto.precio_unitario,
+          }));
 
-      setProductos(productosCategoria);
+          setProductos(productos);
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos de la API:", error);
+        });
     }
   }, [categoriaSeleccionada]);
 

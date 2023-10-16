@@ -59,7 +59,7 @@ export default function DetallesVenta({
   useEffect(() => {
     const container = document.querySelector(".add-producto");
     if (container) {
-      container.scrollTop = container.scrollHeight;
+      container.scrollTop = container.scrollHeight; // Desplaza el contenedor hacia abajo
     }
   }, [nuevo]);
   return (

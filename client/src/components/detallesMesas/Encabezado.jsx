@@ -14,8 +14,10 @@ const DivContenedor = styled.div`
   }
 `;
 
-const Encabezado = ({ setSelectedTable, selectedTable, nuevo }) => {
+const Encabezado = ({ setSelectedTable, selectedTable }) => {
   const [openCambiarMesa, setOpenCambiarMesa] = useState(false);
+
+  // Función para abrir el modal de CambiarMesa
   const handleOpenCambiarMesaModal = () => {
     setOpenCambiarMesa(true);
   };

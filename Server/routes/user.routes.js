@@ -29,7 +29,6 @@ router.post("/login", UserController.login);
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const user = req.user;
-    console.log("user:", user.user_id);
     const userRole = await getUserRoleById(user.user_id);
 
     if (!userRole) {
@@ -57,7 +56,6 @@ function getUserRoleById(userId) {
           resolve(null);
         } else {
           const resultado = results[0];
-          console.log("Resultado encontrado:", resultado);
           resolve(resultado);
         }
       }

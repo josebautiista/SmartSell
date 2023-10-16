@@ -5,6 +5,7 @@ import { useState } from "react";
 import DetallesVenta from "./DetallesVenta";
 import TotalPagar from "./TotalPagar";
 import RegistrarVenta from "./RegistrarVenta";
+import ResponsiveCatProd from "./ResponsiveCatProd";
 
 const DivIzquierdo = styled.div`
   width: 40%;
@@ -21,12 +22,10 @@ const DivIzquierdo = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     height: 100%;
-    justify-content: normal;
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     width: 100%;
-    justify-content: normal;
   }
 `;
 
@@ -70,46 +69,58 @@ export default function Izquierdo({
 
   return (
     <DivIzquierdo>
-      <>
-        <DetallesVenta
-          nuevo={nuevo}
-          selectedTable={selectedTable}
-          setNuevo={setNuevo}
-          agregarProducto={agregarProducto}
+      {agregando ? (
+        <ResponsiveCatProd
+          agregando={agregando}
+          categorias={categorias}
+          handleClick={handleClick}
           formatNumber={formatNumber}
-        ></DetallesVenta>
-
-        <PaperDiv>
-          <TotalPagar
-            montoPagado={montoPagado}
-            formatNumber={formatNumber}
-            total={total}
-          ></TotalPagar>
-
-          <RegistrarVenta
-            montoPagado={montoPagado}
+          agregarProducto={agregarProducto}
+          categoriaSeleccionada={categoriaSeleccionada}
+          setAgregando={setAgregando}
+        />
+      ) : (
+        <>
+          <DetallesVenta
             nuevo={nuevo}
             selectedTable={selectedTable}
             setNuevo={setNuevo}
-            setMontoPagado={setMontoPagado}
-            total={total}
+            agregarProducto={agregarProducto}
             formatNumber={formatNumber}
-          ></RegistrarVenta>
-        </PaperDiv>
+          ></DetallesVenta>
 
-        {isMobile && (
-          <Button
-            color="success"
-            variant="contained"
-            sx={{
-              display: "flex",
-            }}
-            onClick={handleAgregando}
-          >
-            Agregar Productos
-          </Button>
-        )}
-      </>
+          <PaperDiv>
+            <TotalPagar
+              montoPagado={montoPagado}
+              formatNumber={formatNumber}
+              total={total}
+            ></TotalPagar>
+
+            <RegistrarVenta
+              montoPagado={montoPagado}
+              nuevo={nuevo}
+              selectedTable={selectedTable}
+              setNuevo={setNuevo}
+              setMontoPagado={setMontoPagado}
+              total={total}
+              formatNumber={formatNumber}
+            ></RegistrarVenta>
+          </PaperDiv>
+
+          {isMobile && (
+            <Button
+              color="success"
+              variant="contained"
+              sx={{
+                display: "flex",
+              }}
+              onClick={handleAgregando}
+            >
+              Agregar Productos
+            </Button>
+          )}
+        </>
+      )}
     </DivIzquierdo>
   );
 }
@@ -127,7 +138,7 @@ Izquierdo.propTypes = {
   selectedTable: PropTypes.number.isRequired,
   setNuevo: PropTypes.func.isRequired,
   formatNumber: PropTypes.func.isRequired,
-  categorias: PropTypes.array.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  categoriaSeleccionada: PropTypes.number,
+  categorias: PropTypes.array.isRequired, // Agregar esta línea
+  handleClick: PropTypes.func.isRequired, // Agregar esta línea
+  categoriaSeleccionada: PropTypes.number, // Agregar esta línea (ajustar el tipo si es necesario)
 };

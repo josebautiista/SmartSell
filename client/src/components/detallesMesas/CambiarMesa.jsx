@@ -9,31 +9,41 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
-const tableOptionsAPI = [
-  { mesa_id: 1, estado: "Disponible" },
-  { mesa_id: 2, estado: "No Disponible" },
-  { mesa_id: 3, estado: "Disponible" },
-  { mesa_id: 4, estado: "No Disponible" },
-  { mesa_id: 5, estado: "Disponible" },
-  { mesa_id: 6, estado: "No Disponible" },
-  { mesa_id: 7, estado: "Disponible" },
-  { mesa_id: 8, estado: "No Disponible" },
-  { mesa_id: 9, estado: "Disponible" },
-  { mesa_id: 10, estado: "No Disponible" },
-];
+import { localURL } from "../conexion";
 
 const CambiarMesa = ({ setOpen, open, selectedTable, setSelectedTable }) => {
   const [newTable, setNewTable] = useState("");
+  const [tableOptions, setTableOptions] = useState([]);
 
   const handleConfirm = () => {
     if (newTable) {
-      setSelectedTable(newTable);
-      handleClose();
+      axios
+        .put(
+          `http://${localURL}:3000/pedido/cambiar_mesa/${selectedTable}/${newTable}`
+        )
+        .then(() => {
+          setSelectedTable(newTable);
+          handleClose();
+        })
+        .catch((error) => {
+          console.error("Error transferring products:", error);
+        });
     }
   };
+
+  useEffect(() => {
+    axios
+      .get(`http://${localURL}:3000/mesas`)
+      .then((response) => {
+        setTableOptions(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching table options:", error);
+      });
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -54,8 +64,8 @@ const CambiarMesa = ({ setOpen, open, selectedTable, setSelectedTable }) => {
             onChange={(e) => setNewTable(e.target.value)}
             autoFocus
           >
-            {tableOptionsAPI
-              .filter((table) => table.estado === "Disponible")
+            {tableOptions
+              .filter((table) => table.estado === "Disponible") // Filtrar las mesas con estado "Disponible"
               .map((table) => (
                 <MenuItem key={table.mesa_id} value={table.mesa_id}>
                   Mesa {table.mesa_id}

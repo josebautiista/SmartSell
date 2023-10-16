@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import {
   Button,
   MenuItem,
@@ -9,9 +9,11 @@ import {
   DialogActions,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import axios from "axios";
+import PropTypes from "prop-types";
 import MuiAlert from "@mui/material/Alert";
+import { localURL } from "../conexion";
 import { styled } from "styled-components";
-import { useState } from "react";
 
 const DivContenedor = styled.div`
   width: 40%;
@@ -44,13 +46,20 @@ export default function RegistrarVenta({
 }) {
   const [selectedMedioPago, setSelectedMedioPago] = useState("");
   const [medioPagoValido, setMedioPagoValido] = useState(false);
-  const [mediosDePago] = useState([
-    { id: 1, nombre: "Efectivo" },
-    { id: 2, nombre: "Tarjeta de crédito" },
-    { id: 3, nombre: "Transferencia bancaria" },
-  ]);
+  const [mediosDePago, setMediosDePago] = useState([]);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`http://${localURL}:3000/medios_de_pago`)
+      .then((response) => {
+        setMediosDePago(response.data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los medios de pago:", error);
+      });
+  }, []);
 
   const handleMedioPagoChange = (event) => {
     setSelectedMedioPago(event.target.value);
@@ -82,6 +91,7 @@ export default function RegistrarVenta({
           cantidad,
           precio_venta,
           valor_total: precio_venta * cantidad,
+          mesa_id: selectedTable,
         })
       ),
       medio_pago_id: selectedMedioPago,
@@ -89,14 +99,25 @@ export default function RegistrarVenta({
       mesa_id: selectedTable,
     };
 
-    console.log("Simulación: Venta registrada correctamente:", nuevaVenta);
-
-    console.log("Simulación: Carrito vaciado.");
-    setNuevo([]);
-    setSelectedMedioPago("");
-    setMontoPagado("");
-    setIsSnackbarOpen(true);
-    setMedioPagoValido(false);
+    axios
+      .post(`http://${localURL}:3000/ventas`, nuevaVenta)
+      .then(() => {
+        axios
+          .delete(`http://${localURL}:3000/pedido/${selectedTable}`)
+          .then(() => {
+            setNuevo([]);
+            setSelectedMedioPago("");
+            setMontoPagado("");
+            setIsSnackbarOpen(true);
+            setMedioPagoValido(false);
+          })
+          .catch((error) => {
+            console.error("Error al vaciar el carrito:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error al crear la nueva venta:", error);
+      });
   };
 
   const handleMontoPagadoChange = ({ target }) => {
