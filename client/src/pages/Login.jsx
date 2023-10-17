@@ -33,8 +33,6 @@ const Login = () => {
         password,
       });
       const token = response.data.token;
-      console.log("Inicio de sesión exitoso");
-      console.log(response);
       handleSnackbarOpen(response.data.message, "success");
       localStorage.setItem("token", token);
       setTimeout(() => {
@@ -49,66 +47,75 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity={snackbarSeverity}
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Container maxWidth="xs">
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
           onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          {snackbarMessage}
-        </MuiAlert>
-      </Snackbar>
-      <Paper elevation={3} style={{ padding: 20, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>
-          Iniciar Sesión
-        </Typography>
-        <form onSubmit={handleLogin}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Usuario"
-                variant="outlined"
-                size="small"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity={snackbarSeverity}
+            onClose={() => setOpenSnackbar(false)}
+          >
+            {snackbarMessage}
+          </MuiAlert>
+        </Snackbar>
+        <Paper elevation={3} style={{ padding: 20, textAlign: "center" }}>
+          <Typography variant="h5" gutterBottom>
+            Iniciar Sesión
+          </Typography>
+          <form onSubmit={handleLogin}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Usuario"
+                  variant="outlined"
+                  size="small"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Contraseña"
+                  type="password"
+                  variant="outlined"
+                  size="small"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
+                  Iniciar Sesión
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Contraseña"
-                type="password"
-                variant="outlined"
-                size="small"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                size="large"
-              >
-                Iniciar Sesión
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
-    </Container>
+          </form>
+        </Paper>
+      </Container>
+    </div>
   );
 };
 

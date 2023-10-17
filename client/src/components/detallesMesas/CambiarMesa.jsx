@@ -65,7 +65,7 @@ const CambiarMesa = ({ setOpen, open, selectedTable, setSelectedTable }) => {
             autoFocus
           >
             {tableOptions
-              .filter((table) => table.estado === "Disponible") // Filtrar las mesas con estado "Disponible"
+              .filter((table) => table.estado === "Disponible")
               .map((table) => (
                 <MenuItem key={table.mesa_id} value={table.mesa_id}>
                   Mesa {table.mesa_id}

@@ -1,4 +1,3 @@
-//server.js
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -17,7 +16,6 @@ app.use("/ventas", require("./routes/ventas.routes"));
 app.use("/detalles_venta", require("./routes/detalles_venta.routes"));
 app.use("/inventario", require("./routes/inventario.routes"));
 app.use("/medios_de_pago", require("./routes/mediosPago.routes"));
-app.use("/compras", require("./routes/compras.routes"));
 
 app.listen(port, () => {
   console.log(`Servidor en funcionamiento en http://localhost:${port}`);

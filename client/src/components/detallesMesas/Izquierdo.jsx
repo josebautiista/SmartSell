@@ -138,7 +138,7 @@ Izquierdo.propTypes = {
   selectedTable: PropTypes.number.isRequired,
   setNuevo: PropTypes.func.isRequired,
   formatNumber: PropTypes.func.isRequired,
-  categorias: PropTypes.array.isRequired, // Agregar esta línea
-  handleClick: PropTypes.func.isRequired, // Agregar esta línea
-  categoriaSeleccionada: PropTypes.number, // Agregar esta línea (ajustar el tipo si es necesario)
+  categorias: PropTypes.array.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  categoriaSeleccionada: PropTypes.number,
 };

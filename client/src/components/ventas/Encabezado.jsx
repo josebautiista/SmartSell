@@ -1,8 +1,10 @@
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import PropTypes from "prop-types";
+import { localURL } from "../conexion";
 
 export default function Encabezado({ formatNumber, setFilteredVentas }) {
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -22,62 +24,17 @@ export default function Encabezado({ formatNumber, setFilteredVentas }) {
 
   const [ventas, setVentas] = useState([]);
   const [totalVentas, setTotalVentas] = useState(0);
+  useEffect;
   useEffect(() => {
-    const ventasData = [
-      {
-        venta_id: 1,
-        cliente_id: 101,
-        nombre_cliente: "Cliente A",
-        email_cliente: "clienteA@example.com",
-        telefono_cliente: "123-456-7890",
-        fecha_hora: "2023-10-01T10:00:00Z",
-        nombre_medio_pago: "Tarjeta de Crédito",
-        detalleVentas: [
-          {
-            nombre_producto: "Producto 1",
-            cantidad: 2,
-            precio_venta: 50,
-            valor_total: 100,
-          },
-          {
-            nombre_producto: "Producto 2",
-            cantidad: 1,
-            precio_venta: 30,
-            valor_total: 30,
-          },
-        ],
-        total: 130,
-        cantidad_pago: 150,
-      },
-      {
-        venta_id: 2,
-        cliente_id: 102,
-        nombre_cliente: "Cliente B",
-        email_cliente: "clienteB@example.com",
-        telefono_cliente: "987-654-3210",
-        fecha_hora: "2023-10-02T15:30:00Z",
-        nombre_medio_pago: "Efectivo",
-        detalleVentas: [
-          {
-            nombre_producto: "Producto 3",
-            cantidad: 3,
-            precio_venta: 40,
-            valor_total: 120,
-          },
-          {
-            nombre_producto: "Producto 4",
-            cantidad: 2,
-            precio_venta: 25,
-            valor_total: 50,
-          },
-        ],
-        total: 170,
-        cantidad_pago: 200,
-      },
-    ];
-
-    const uniqueVentas = getUniqueVentas(ventasData, "venta_id");
-    setVentas(uniqueVentas);
+    axios
+      .get(`http://${localURL}:3000/ventas`)
+      .then((response) => {
+        const uniqueVentas = getUniqueVentas(response.data, "venta_id");
+        setVentas(uniqueVentas);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos de ventas:", error);
+      });
   }, []);
 
   const getUniqueVentas = (ventas, key) => {
@@ -94,14 +51,21 @@ export default function Encabezado({ formatNumber, setFilteredVentas }) {
     if (selectedDate) {
       const fecha = new Date(selectedDate).toISOString().slice(0, 10);
 
-      const filteredVentas = ventas.filter((venta) => venta.fecha === fecha);
-      setFilteredVentas(filteredVentas);
+      axios
+        .get(`http://${localURL}:3000/ventas/fecha?fecha=${fecha}`)
+        .then((response) => {
+          const filteredVentas = response.data;
+          setFilteredVentas(filteredVentas);
 
-      const totalVentas = filteredVentas.reduce(
-        (total, venta) => total + venta.total,
-        0
-      );
-      setTotalVentas(totalVentas);
+          const totalVentas = filteredVentas.reduce(
+            (total, venta) => total + venta.total,
+            0
+          );
+          setTotalVentas(totalVentas);
+        })
+        .catch((error) => {
+          console.error("Error al obtener las ventas:", error);
+        });
     } else {
       setFilteredVentas(ventas);
 
@@ -112,7 +76,6 @@ export default function Encabezado({ formatNumber, setFilteredVentas }) {
       setTotalVentas(totalVentas);
     }
   };
-
   useEffect(() => {
     handleFilterVentas();
   }, []);

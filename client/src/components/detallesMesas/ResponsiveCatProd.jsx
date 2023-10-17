@@ -98,7 +98,6 @@ function ResponsiveCatProd({
   }, [categoriaSeleccionada]);
 
   const handleRegresar = () => {
-    // Establece agregando en false cuando se hace clic en el botón de regreso
     setAgregando(false);
   };
 

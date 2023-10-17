@@ -112,7 +112,7 @@ export default function RegistrarVenta({
             setMedioPagoValido(false);
           })
           .catch((error) => {
-            console.error("Error al vaciar el carrito:", error);
+            console.error("Error al vaciar la mesa:", error);
           });
       })
       .catch((error) => {

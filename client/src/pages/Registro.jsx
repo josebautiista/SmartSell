@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { conexion, port } from "../conexion";
+import { localURL } from "../components/conexion";
 
 const Registro = () => {
   const [roles, setRoles] = useState([]);
@@ -43,9 +43,8 @@ const Registro = () => {
 
   useEffect(() => {
     axios
-      .get(`http://${conexion}:${port}/roles/`)
+      .get(`http://${localURL}:3000/roles/`)
       .then((response) => {
-        console.log(response.data);
         setRoles(response.data);
       })
       .catch((error) => {
@@ -82,10 +81,8 @@ const Registro = () => {
     };
 
     axios
-      .post(`http://${conexion}:${port}/user/register`, dataToSend)
+      .post(`http://${localURL}:3000/user/register`, dataToSend)
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
         resetForm();
         handleSnackbarOpen("Usuario registrado exitosamente", "success");
       })
@@ -103,7 +100,7 @@ const Registro = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh",
+        height: "100vh",
       }}
     >
       <Snackbar

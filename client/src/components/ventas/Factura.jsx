@@ -19,6 +19,7 @@ export default function Factura({
   setOpenModal,
   openModal,
   detalleVentas,
+  formatNumber,
 }) {
   const contentRef = useRef(null);
 
@@ -26,10 +27,36 @@ export default function Factura({
     setOpenModal(false);
   };
 
+  const handlePrint = () => {
+    const printableContent = contentRef.current.innerHTML;
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Detalles de la Venta</title>
+        <style>
+          /* Estilos opcionales para la impresión */
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 10px;
+          }
+        </style>
+      </head>
+      <body>
+        ${printableContent}
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <Dialog open={openModal} onClose={handleCloseModal}>
       <DialogTitle>Detalles de la Venta</DialogTitle>
       <DialogContent className="detalles_venta" ref={contentRef}>
+        {/* Aquí puedes mostrar los detalles de la venta seleccionada */}
         {selectedVenta && (
           <div>
             <p>
@@ -83,10 +110,10 @@ export default function Factura({
                         {detalle.cantidad}
                       </TableCell>
                       <TableCell style={{ textAlign: "center" }}>
-                        {detalle.precio_venta}
+                        {formatNumber(detalle.precio_venta)}
                       </TableCell>
                       <TableCell style={{ textAlign: "center" }}>
-                        {detalle.valor_total}
+                        {formatNumber(detalle.valor_total)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -100,7 +127,7 @@ export default function Factura({
                     </TableCell>
                     <TableCell>
                       <span style={{ fontSize: "1.8em", fontWeight: "bold" }}>
-                        {selectedVenta.total}
+                        {formatNumber(selectedVenta.total)}
                       </span>
                     </TableCell>
                   </TableRow>
@@ -108,16 +135,20 @@ export default function Factura({
                     <TableCell colSpan={3}>
                       <b>Recibido:</b>
                     </TableCell>
-                    <TableCell>{selectedVenta.cantidad_pago}</TableCell>
+                    <TableCell>
+                      {formatNumber(selectedVenta.cantidad_pago)}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={3}>
                       <b>Cambio:</b>
                     </TableCell>
                     <TableCell>
-                      {selectedVenta.cantidad_pago - selectedVenta.total < 0
-                        ? 0
-                        : selectedVenta.cantidad_pago - selectedVenta.total}
+                      {formatNumber(
+                        selectedVenta.cantidad_pago - selectedVenta.total < 0
+                          ? 0
+                          : selectedVenta.cantidad_pago - selectedVenta.total
+                      )}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -127,6 +158,9 @@ export default function Factura({
         )}
       </DialogContent>
       <DialogActions>
+        <Button onClick={handlePrint} color="primary" variant="contained">
+          Imprimir
+        </Button>
         <Button onClick={handleCloseModal} color="error" variant="contained">
           Cerrar
         </Button>

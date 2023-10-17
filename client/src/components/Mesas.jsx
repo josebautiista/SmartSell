@@ -2,13 +2,16 @@ import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
+import Axios from "axios";
 import Mesa from "./Mesa";
 import { styled } from "styled-components";
+import { IoMdAdd } from "react-icons/io";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
+import { localURL } from "./conexion";
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -48,34 +51,29 @@ export default function Mesas() {
   const añadirMesa = () => {
     setDialogOpen(true);
   };
-  const mesasAPI = [
-    { mesa_id: 1, estado: "Disponible" },
-    { mesa_id: 2, estado: "No Disponible" },
-    { mesa_id: 3, estado: "Disponible" },
-    { mesa_id: 4, estado: "No Disponible" },
-    { mesa_id: 5, estado: "Disponible" },
-    { mesa_id: 6, estado: "No Disponible" },
-    { mesa_id: 7, estado: "Disponible" },
-    { mesa_id: 8, estado: "No Disponible" },
-    { mesa_id: 9, estado: "Disponible" },
-    { mesa_id: 10, estado: "No Disponible" },
-  ];
-
   const confirmarAñadirMesa = () => {
-    const nuevaMesa = {
-      mesa_id: mesas.length + 1,
+    Axios.post(`http://${localURL}:3000/mesas`, {
       capacidad: 4,
       estado: "Disponible",
-    };
-
-    setMesas([...mesas, nuevaMesa]);
-
-    console.log("Mesa agregada correctamente");
-    handleCloseDialog();
+    })
+      .then(() => {
+        handleCloseDialog();
+      })
+      .catch((error) => {
+        console.error("Error al crear la nueva mesa:", error);
+        handleCloseDialog();
+      });
   };
 
   useEffect(() => {
-    setMesas(mesasAPI);
+    const getMesas = () => {
+      Axios.get(`http://${localURL}:3000/mesas`).then((response) => {
+        setMesas(response.data);
+      });
+    };
+    getMesas();
+    const interval = setInterval(getMesas, 100);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -138,7 +136,12 @@ export default function Mesas() {
           background: "#4a6f20",
         }}
       >
-        <p onClick={añadirMesa}>+</p>
+        <IoMdAdd
+          color="white"
+          cursor={"pointer"}
+          size={"7rem"}
+          onClick={añadirMesa}
+        />
       </PaperMesa>
     </StyledBox>
   );

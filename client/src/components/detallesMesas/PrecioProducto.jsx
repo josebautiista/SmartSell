@@ -25,7 +25,6 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
           }
         )
         .then(() => {
-          // Actualizar el estado local con los datos actualizados de la API
           setNuevo((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
@@ -33,11 +32,10 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
                 : pro
             )
           );
-          console.log("Cantidad de producto restada en el carrito.");
         })
         .catch((error) => {
           console.error(
-            "Error al restar la cantidad del producto en el carrito:",
+            "Error al restar la cantidad del producto en la mesa:",
             error
           );
         });
@@ -60,7 +58,7 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
               : prod
           )
         );
-        modificarPrecio(producto, nuevoPrecio); // Enviar el producto con el precio cambiado como parámetro
+        modificarPrecio(producto, nuevoPrecio);
       }}
     />
   );

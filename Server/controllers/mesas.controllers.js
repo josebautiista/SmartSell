@@ -1,34 +1,22 @@
-const connection = require("../db");
-const { actualizarEstadoMesa } = require("../actualizarMesa");
+const mesasService = require("../services/mesas.services");
 
 exports.getMesas = (req, res) => {
-  connection.query("SELECT * FROM mesas", (err, result) => {
+  mesasService.getMesas((err, result) => {
     if (err) {
-      console.log(err);
+      res.status(500).json({ error: "Error al obtener las mesas" });
     } else {
-      res.send(result);
-      result.forEach((res) => {
-        actualizarEstadoMesa(res.mesa_id);
-      });
+      res.json(result);
     }
   });
 };
 
 exports.crearMesa = (req, res) => {
   const { capacidad, estado } = req.body;
-
-  connection.query(
-    "INSERT INTO mesas (capacidad, estado, mesa_id2) VALUES (?, ?, UUID())",
-    [capacidad, estado],
-    (err, result) => {
-      if (err) {
-        console.error("Error al crear la nueva mesa: " + err.stack);
-        res.status(500).json({
-          error: "Error al crear la nueva mesa.",
-        });
-      } else {
-        res.json({ message: "Mesa agregada correctamente." });
-      }
+  mesasService.crearMesa(capacidad, estado, (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error al crear la nueva mesa" });
+    } else {
+      res.json(result);
     }
-  );
+  });
 };

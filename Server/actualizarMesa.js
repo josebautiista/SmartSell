@@ -5,10 +5,7 @@ module.exports.actualizarEstadoMesa = (mesa_id) => {
     "SELECT COUNT(*) AS count FROM pedido WHERE mesa_id = ?";
   connection.query(checkProductosQuery, [mesa_id], (error, results) => {
     if (error) {
-      console.error(
-        "Error al verificar productos en el carrito de compras:",
-        error
-      );
+      console.error("Error al verificar productos en la mesa:", error);
     } else {
       const tieneProductos = results[0].count > 0;
       const nuevoEstado = tieneProductos ? "Ocupada" : "Disponible";

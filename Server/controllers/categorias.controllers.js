@@ -1,12 +1,19 @@
-const connection = require("../db");
+const CategoriasService = require("../services/categorias.services");
 
-exports.getCategorias = (req, res) => {
-  connection.query("SELECT * FROM categorias", (error, results, fields) => {
-    if (error) {
-      console.error("Error al realizar la consulta: " + error.stack);
-      res.status(500).send("Error al realizar la consulta.");
-      return;
-    }
-    res.json(results);
-  });
-};
+class CategoriasController {
+  constructor() {
+    this.categoriasService = new CategoriasService();
+  }
+
+  getCategorias(req, res) {
+    this.categoriasService.getCategorias((error, results) => {
+      if (error) {
+        console.error("Error al obtener categorías:", error);
+        return res.status(500).send("Error al obtener categorías.");
+      }
+      res.json(results);
+    });
+  }
+}
+
+module.exports = CategoriasController;

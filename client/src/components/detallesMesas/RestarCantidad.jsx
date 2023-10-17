@@ -10,23 +10,19 @@ export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
         `http://${localURL}:3000/pedido/existe/${selectedTable}/${productoId}`
       )
       .then(() => {
-        // Actualizar el estado local eliminando el producto con productoId
         setNuevo((prevNuevo) =>
           prevNuevo.filter((producto) => producto.producto_id !== productoId)
         );
-        console.log("Producto eliminado del carrito en el backend.");
       })
       .catch((error) => {
-        console.error("Error al eliminar el producto del carrito:", error);
+        console.error("Error al eliminar el producto de la mesa:", error);
       });
   };
   const restarCantidad = (producto) => {
     const nuevaCantidad = producto.cantidad - 1;
     if (nuevaCantidad <= 0) {
-      // Si la cantidad llega a 0, eliminar el producto del carrito en el backend
       eliminarProductoCarrito(producto.producto_id);
     } else {
-      // Si la cantidad es mayor a 0, actualizar la cantidad en el carrito mediante una solicitud PUT a la API
       axios
         .put(
           `http://${localURL}:3000/pedido/${selectedTable}/${producto.producto_id}/actualizar_cantidad`,
@@ -35,7 +31,6 @@ export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
           }
         )
         .then(() => {
-          // Actualizar el estado local con los datos actualizados de la API
           setNuevo((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
@@ -43,11 +38,10 @@ export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
                 : pro
             )
           );
-          console.log("Cantidad de producto restada en el carrito.");
         })
         .catch((error) => {
           console.error(
-            "Error al restar la cantidad del producto en el carrito:",
+            "Error al restar la cantidad del producto en la mesa:",
             error
           );
         });
@@ -55,8 +49,9 @@ export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
   };
   return (
     <IoIosRemove
-      color="error"
-      sx={{ cursor: "pointer" }}
+      color="red"
+      cursor={"pointer"}
+      size={"1.5rem"}
       onClick={() => restarCantidad(producto)}
     />
   );
@@ -66,7 +61,6 @@ RestarCantidad.propTypes = {
     producto_id: PropTypes.number.isRequired,
     nombre: PropTypes.string.isRequired,
     cantidad: PropTypes.number.isRequired,
-    // Otras propiedades si las hay
   }).isRequired,
   setNuevo: PropTypes.func.isRequired,
   selectedTable: PropTypes.number.isRequired,

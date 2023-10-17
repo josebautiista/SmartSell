@@ -32,7 +32,10 @@ export default function Ventas() {
   };
 
   return (
-    <Box p={3}>
+    <Box
+      p={3}
+      sx={{ margin: "30px auto", width: "90%", alignSelf: "flex-start" }}
+    >
       <Encabezado
         formatNumber={formatNumber}
         setFilteredVentas={setFilteredVentas}

@@ -39,7 +39,6 @@ export default function CantidadProducto({
           }
         )
         .then(() => {
-          // Actualizar el estado local con los datos actualizados de la API
           setNuevo((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
@@ -47,11 +46,10 @@ export default function CantidadProducto({
                 : pro
             )
           );
-          console.log("Cantidad de producto restada en el carrito.");
         })
         .catch((error) => {
           console.error(
-            "Error al restar la cantidad del producto en el carrito:",
+            "Error al restar la cantidad del producto en la mesa:",
             error
           );
         });
@@ -80,8 +78,9 @@ export default function CantidadProducto({
         }}
       />
       <IoIosAdd
-        color="success"
-        sx={{ cursor: "pointer" }}
+        color="green"
+        size={"1.5rem"}
+        cursor={"pointer"}
         onClick={() => agregarProducto(producto)}
       />
     </DivCantidad>

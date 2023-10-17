@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import Menu from "./components/Menu.jsx";
 import Inventario from "./pages/Inventario.jsx";
 import Ventas from "./components/ventas/Ventas.jsx";
+import "./App.css";
 
 function parseJwt(token) {
   if (!token) {
@@ -30,8 +31,6 @@ function parseJwt(token) {
 }
 
 const token = localStorage.getItem("token");
-console.log(token);
-
 let tokenExistAndStillValid = false;
 
 if (token) {
@@ -40,10 +39,8 @@ if (token) {
 
 const App = () => {
   const [user, setUser] = useState(null);
-  console.log(user);
   async function obtenerInformacionDelUsuario() {
     const token = localStorage.getItem("token");
-    console.log(token);
     if (!token) {
       return;
     }
@@ -57,7 +54,6 @@ const App = () => {
 
       const { user } = response.data;
       setUser(user);
-      console.log(user.role == "Admin");
     } catch (error) {
       console.error("Error al obtener la información del usuario:", error);
     }
@@ -88,7 +84,7 @@ const App = () => {
           <Route
             path="/registro"
             element={
-              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+              <ProtectedRoute isAllowed={!!user && user.role == "Admin"}>
                 <Registro />
               </ProtectedRoute>
             }
@@ -97,7 +93,7 @@ const App = () => {
           <Route
             path="/Mesas"
             element={
-              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+              <ProtectedRoute isAllowed={!!user && user.role == "Admin"}>
                 <Mesas />
               </ProtectedRoute>
             }
@@ -105,7 +101,7 @@ const App = () => {
           <Route
             path="/Inventario"
             element={
-              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+              <ProtectedRoute isAllowed={!!user && user.role == "Admin"}>
                 <Inventario />
               </ProtectedRoute>
             }
@@ -114,7 +110,7 @@ const App = () => {
           <Route
             path="/Ventas"
             element={
-              <ProtectedRoute isAllowed={!!user && user.role == "Mesero"}>
+              <ProtectedRoute isAllowed={!!user && user.role == "Admin"}>
                 <Ventas />
               </ProtectedRoute>
             }

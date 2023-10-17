@@ -70,7 +70,7 @@ export const Detalles = ({ idMesa }) => {
     setCategoriaSeleccionada(id);
   };
 
-  const obtenerProductosEnCarrito = useCallback(() => {
+  const obtenerProductosPedido = useCallback(() => {
     axios
       .get(`http://${localURL}:3000/pedido/${selectedTable}`)
       .then(({ data }) => {
@@ -78,16 +78,15 @@ export const Detalles = ({ idMesa }) => {
         setNuevo(productos);
       })
       .catch((error) => {
-        console.error("Error al obtener productos en carrito:", error);
+        console.error("Error al obtener productos de la mesa:", error);
       });
   }, [selectedTable]);
 
   useEffect(() => {
-    obtenerProductosEnCarrito();
-  }, [obtenerProductosEnCarrito]);
+    obtenerProductosPedido();
+  }, [obtenerProductosPedido]);
 
   const agregarProducto = (producto) => {
-    // Realizar una solicitud GET a la API para obtener el producto en el carrito actual de la mesa
     axios
       .get(
         `http://${localURL}:3000/pedido/existe/${selectedTable}/${producto.producto_id}`
@@ -96,10 +95,7 @@ export const Detalles = ({ idMesa }) => {
         const productoEnCarrito = data;
 
         if (productoEnCarrito) {
-          console.log("existe");
-          // Si el producto ya existe en el carrito, aumentar la cantidad en la API
           const nuevaCantidad = productoEnCarrito.cantidad + 1;
-          console.log(nuevaCantidad);
           axios
             .put(
               `http://${localURL}:3000/pedido/${selectedTable}/${producto.producto_id}/actualizar_cantidad`,
@@ -109,7 +105,6 @@ export const Detalles = ({ idMesa }) => {
               }
             )
             .then(() => {
-              // Actualizar el estado local con los datos actualizados de la API
               setNuevo((prevNuevo) =>
                 prevNuevo.map((producto) =>
                   producto.producto_id === productoEnCarrito.producto_id
@@ -117,16 +112,14 @@ export const Detalles = ({ idMesa }) => {
                     : producto
                 )
               );
-              console.log("Cantidad de producto aumentada en el carrito.");
             })
             .catch((error) => {
               console.error(
-                "Error al aumentar la cantidad del producto en el carrito:",
+                "Error al aumentar la cantidad del producto en la mesa:",
                 error
               );
             });
         } else {
-          // Si el producto no existe en el carrito, agregarlo al carrito en la API
           axios
             .post(`http://${localURL}:3000/pedido`, {
               ...producto,
@@ -134,20 +127,18 @@ export const Detalles = ({ idMesa }) => {
               cantidad: 1,
             })
             .then(() => {
-              // Actualizar el estado local con los datos actualizados de la API
               setNuevo((prevNuevo) => [
                 ...prevNuevo,
                 { ...producto, cantidad: 1 },
               ]);
-              console.log("Producto agregado al carrito.");
             })
             .catch((error) => {
-              console.error("Error al agregar el producto al carrito:", error);
+              console.error("Error al agregar el producto a la mesa:", error);
             });
         }
       })
       .catch((error) => {
-        console.error("Error al obtener el producto en el carrito:", error);
+        console.error("Error al obtener el producto en la mesa:", error);
       });
   };
 
