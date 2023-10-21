@@ -11,6 +11,7 @@ import axios from "axios";
 import { useState } from "react";
 import MuiAlert from "@mui/material/Alert";
 import { Snackbar } from "@mui/material";
+import { localURL } from "../components/conexion";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -28,7 +29,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/user/login", {
+      const response = await axios.post(`http://${localURL}:3000/user/login`, {
         username,
         password,
       });
@@ -72,6 +73,11 @@ const Login = () => {
           </MuiAlert>
         </Snackbar>
         <Paper elevation={3} style={{ padding: 20, textAlign: "center" }}>
+          <img
+            src="../../src/assets/logo.svg"
+            alt="logo"
+            style={{ width: "15%" }}
+          />
           <Typography variant="h5" gutterBottom>
             Iniciar Sesión
           </Typography>

@@ -9,6 +9,7 @@ import Menu from "./components/Menu.jsx";
 import Inventario from "./pages/Inventario.jsx";
 import Ventas from "./components/ventas/Ventas.jsx";
 import "./App.css";
+import { localURL } from "./components/conexion.js";
 
 function parseJwt(token) {
   if (!token) {
@@ -46,7 +47,7 @@ const App = () => {
     }
 
     try {
-      const response = await axios.get("http://localhost:3000/user/", {
+      const response = await axios.get(`http://${localURL}:3000/user`, {
         headers: {
           Authorization: `${token}`,
         },

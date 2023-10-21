@@ -120,9 +120,23 @@ const Registro = () => {
       </Snackbar>
 
       <Paper elevation={3} style={{ padding: "20px", maxWidth: "400px" }}>
-        <Typography variant="h5" style={{ marginBottom: "16px" }}>
-          Registro
-        </Typography>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src="../../src/assets/logo.svg"
+            alt="logo"
+            style={{ width: "15%" }}
+          />
+          <Typography variant="h5" style={{ marginBottom: "16px" }}>
+            Registro
+          </Typography>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
