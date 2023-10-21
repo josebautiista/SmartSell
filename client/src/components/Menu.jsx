@@ -152,6 +152,11 @@ export default function Menu({ user, obtenerInformacionDelUsuario }) {
               >
                 <AiOutlineMenu cursor={"pointer"} />
               </IconButton>
+              <img
+                src="../../src/assets/logo.svg"
+                alt="logo"
+                style={{ width: "40px", marginRight: "10px" }}
+              />
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 SmartSell
               </Typography>

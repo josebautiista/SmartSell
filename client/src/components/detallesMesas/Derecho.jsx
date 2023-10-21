@@ -4,6 +4,19 @@ import { Paper } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { localURL } from "../conexion";
+import {
+  PiBeerBottleBold,
+  PiBeerSteinBold,
+  PiBeerBottleDuotone,
+  PiBeerSteinDuotone,
+  PiBeerBottleFill,
+  PiBeerSteinFill,
+  PiBeerBottleLight,
+  PiBeerBottle,
+  PiBeerStein,
+  PiBeerBottleThin,
+  PiBeerSteinThin,
+} from "react-icons/pi";
 
 const DivDerecho = styled.div`
   width: 40%;
@@ -46,6 +59,19 @@ export default function Derecho({
   categoriaSeleccionada,
 }) {
   const [productos, setProductos] = useState([]);
+  const iconComponents = {
+    PiBeerBottleBold,
+    PiBeerSteinBold,
+    PiBeerBottleDuotone,
+    PiBeerSteinDuotone,
+    PiBeerBottleFill,
+    PiBeerSteinFill,
+    PiBeerBottleLight,
+    PiBeerBottle,
+    PiBeerStein,
+    PiBeerBottleThin,
+    PiBeerSteinThin,
+  };
 
   useEffect(() => {
     if (categoriaSeleccionada) {
@@ -69,14 +95,19 @@ export default function Derecho({
 
   return (
     <DivDerecho className="productos">
-      {productos.map((producto, i) => (
-        <ProductosAdd key={i} onClick={() => agregarProducto(producto)}>
-          <p style={{ textAlign: "center", fontWeight: "bold" }}>
-            {producto.nombre}
-          </p>
-          <span>{formatNumber(producto.precio_unitario)}</span>
-        </ProductosAdd>
-      ))}
+      {productos.map((producto, i) => {
+        const IconComponent = iconComponents[producto.icon];
+
+        return (
+          <ProductosAdd key={i} onClick={() => agregarProducto(producto)}>
+            {IconComponent && <IconComponent size={"2rem"} color={"green"} />}{" "}
+            <p style={{ textAlign: "center", fontWeight: "bold" }}>
+              {producto.nombre}
+            </p>
+            <span>{formatNumber(producto.precio_unitario)}</span>
+          </ProductosAdd>
+        );
+      })}
     </DivDerecho>
   );
 }
