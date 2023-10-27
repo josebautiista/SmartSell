@@ -50,9 +50,9 @@ const ProductoCarrito = styled(Paper)`
 `;
 
 export default function DetallesVenta({
-  nuevo,
+  addProductos,
   selectedTable,
-  setNuevo,
+  setAddProductos,
   agregarProducto,
   formatNumber,
 }) {
@@ -61,7 +61,7 @@ export default function DetallesVenta({
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
-  }, [nuevo]);
+  }, [addProductos]);
   return (
     <>
       <NombreColumnas>
@@ -71,19 +71,19 @@ export default function DetallesVenta({
         <div style={{ flexBasis: "18%" }}>Valor</div>
       </NombreColumnas>
       <ContainerDetallesProductos className="add-producto">
-        {nuevo.map((producto, i) => (
+        {addProductos.map((producto, i) => (
           <ProductoCarrito key={i}>
             <div style={{ width: "40%" }}>{producto.nombre}</div>
             <CantidadProducto
               selectedTable={selectedTable}
-              setNuevo={setNuevo}
+              setAddProductos={setAddProductos}
               producto={producto}
               agregarProducto={agregarProducto}
             ></CantidadProducto>
 
             <PrecioProducto
               producto={producto}
-              setNuevo={setNuevo}
+              setAddProductos={setAddProductos}
               selectedTable={selectedTable}
             ></PrecioProducto>
 
@@ -97,7 +97,7 @@ export default function DetallesVenta({
   );
 }
 DetallesVenta.propTypes = {
-  nuevo: PropTypes.arrayOf(
+  addProductos: PropTypes.arrayOf(
     PropTypes.shape({
       producto_id: PropTypes.number.isRequired,
       nombre: PropTypes.string.isRequired,
@@ -106,7 +106,7 @@ DetallesVenta.propTypes = {
     })
   ).isRequired,
   selectedTable: PropTypes.number.isRequired,
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   agregarProducto: PropTypes.func.isRequired,
   formatNumber: PropTypes.func.isRequired,
 };

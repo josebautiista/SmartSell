@@ -5,18 +5,29 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { localURL } from "../conexion";
 import {
-  PiBeerBottleBold,
-  PiBeerSteinBold,
   PiBeerBottleDuotone,
-  PiBeerSteinDuotone,
   PiBeerBottleFill,
-  PiBeerSteinFill,
   PiBeerBottleLight,
-  PiBeerBottle,
-  PiBeerStein,
-  PiBeerBottleThin,
   PiBeerSteinThin,
+  PiBeerSteinLight,
 } from "react-icons/pi";
+import { LiaBeerSolid, LiaSmokingSolid } from "react-icons/lia";
+import { RiBeerLine } from "react-icons/ri";
+import {
+  GiBeerBottle,
+  GiSquareBottle,
+  GiWineBottle,
+  GiWaterBottle,
+  GiWaterFlask,
+  GiSodaCan,
+  GiFrenchFries,
+} from "react-icons/gi";
+import { LuBeer, LuGlassWater } from "react-icons/lu";
+import { IoMdBeer } from "react-icons/io";
+import { FaBottleWater, FaGlassWaterDroplet } from "react-icons/fa6";
+import { CiFries } from "react-icons/ci";
+import { TbCandy } from "react-icons/tb";
+import { BiDrink } from "react-icons/bi";
 
 const DivDerecho = styled.div`
   width: 40%;
@@ -60,17 +71,29 @@ export default function Derecho({
 }) {
   const [productos, setProductos] = useState([]);
   const iconComponents = {
-    PiBeerBottleBold,
-    PiBeerSteinBold,
-    PiBeerBottleDuotone,
-    PiBeerSteinDuotone,
-    PiBeerBottleFill,
-    PiBeerSteinFill,
-    PiBeerBottleLight,
-    PiBeerBottle,
-    PiBeerStein,
-    PiBeerBottleThin,
     PiBeerSteinThin,
+    LiaBeerSolid,
+    RiBeerLine,
+    GiBeerBottle,
+    LuBeer,
+    IoMdBeer,
+    PiBeerSteinLight,
+    PiBeerBottleLight,
+    PiBeerBottleDuotone,
+    PiBeerBottleFill,
+    GiSquareBottle,
+    GiWineBottle,
+    FaBottleWater,
+    FaGlassWaterDroplet,
+    GiWaterBottle,
+    GiWaterFlask,
+    LuGlassWater,
+    GiSodaCan,
+    CiFries,
+    GiFrenchFries,
+    TbCandy,
+    LiaSmokingSolid,
+    BiDrink,
   };
 
   useEffect(() => {
@@ -100,7 +123,7 @@ export default function Derecho({
 
         return (
           <ProductosAdd key={i} onClick={() => agregarProducto(producto)}>
-            {IconComponent && <IconComponent size={"2rem"} color={"green"} />}{" "}
+            {IconComponent && <IconComponent size={"2.5rem"} color={"green"} />}{" "}
             <p style={{ textAlign: "center", fontWeight: "bold" }}>
               {producto.nombre}
             </p>

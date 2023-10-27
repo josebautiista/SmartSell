@@ -36,9 +36,9 @@ const RTextField = styled(TextField)`
 `;
 
 export default function RegistrarVenta({
-  setNuevo,
+  setAddProductos,
   selectedTable,
-  nuevo,
+  addProductos,
   montoPagado,
   setMontoPagado,
   total,
@@ -84,7 +84,7 @@ export default function RegistrarVenta({
       montoPagado !== "" ? parseFloat(montoPagado.replace(/\./g, "")) : 0;
     const nuevaVenta = {
       cliente_id: 1,
-      detalles: nuevo.map(
+      detalles: addProductos.map(
         ({ producto_id, nombre, cantidad, precio_venta }) => ({
           producto_id,
           nombre_producto: nombre,
@@ -105,7 +105,7 @@ export default function RegistrarVenta({
         axios
           .delete(`http://${localURL}:3000/pedido/${selectedTable}`)
           .then(() => {
-            setNuevo([]);
+            setAddProductos([]);
             setSelectedMedioPago("");
             setMontoPagado("");
             setIsSnackbarOpen(true);
@@ -220,9 +220,9 @@ export default function RegistrarVenta({
 }
 
 RegistrarVenta.propTypes = {
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   selectedTable: PropTypes.number.isRequired,
-  nuevo: PropTypes.array.isRequired,
+  addProductos: PropTypes.array.isRequired,
   montoPagado: PropTypes.string.isRequired,
   setMontoPagado: PropTypes.func.isRequired,
   total: PropTypes.number.isRequired,

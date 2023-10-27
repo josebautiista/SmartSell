@@ -43,9 +43,9 @@ const PaperDiv = styled(Paper)`
 
 export default function Izquierdo({
   agregarProducto,
-  nuevo,
+  addProductos,
   selectedTable,
-  setNuevo,
+  setAddProductos,
   formatNumber,
   categorias,
   handleClick,
@@ -58,7 +58,7 @@ export default function Izquierdo({
     setAgregando(!agregando);
   };
 
-  const total = nuevo
+  const total = addProductos
     .map(
       ({ precio_venta, precio_unitario, cantidad }) =>
         (precio_venta !== undefined ? precio_venta : precio_unitario) * cantidad
@@ -82,9 +82,9 @@ export default function Izquierdo({
       ) : (
         <>
           <DetallesVenta
-            nuevo={nuevo}
+            addProductos={addProductos}
             selectedTable={selectedTable}
-            setNuevo={setNuevo}
+            setAddProductos={setAddProductos}
             agregarProducto={agregarProducto}
             formatNumber={formatNumber}
           ></DetallesVenta>
@@ -98,9 +98,9 @@ export default function Izquierdo({
 
             <RegistrarVenta
               montoPagado={montoPagado}
-              nuevo={nuevo}
+              addProductos={addProductos}
               selectedTable={selectedTable}
-              setNuevo={setNuevo}
+              setAddProductos={setAddProductos}
               setMontoPagado={setMontoPagado}
               total={total}
               formatNumber={formatNumber}
@@ -127,7 +127,7 @@ export default function Izquierdo({
 
 Izquierdo.propTypes = {
   agregarProducto: PropTypes.func.isRequired,
-  nuevo: PropTypes.arrayOf(
+  addProductos: PropTypes.arrayOf(
     PropTypes.shape({
       producto_id: PropTypes.number.isRequired,
       nombre: PropTypes.string.isRequired,
@@ -136,7 +136,7 @@ Izquierdo.propTypes = {
     })
   ).isRequired,
   selectedTable: PropTypes.number.isRequired,
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   formatNumber: PropTypes.func.isRequired,
   categorias: PropTypes.array.isRequired,
   handleClick: PropTypes.func.isRequired,

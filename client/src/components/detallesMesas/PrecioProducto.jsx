@@ -13,7 +13,11 @@ const InputPrecio = styled.input`
   border-radius: 5px;
 `;
 
-export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
+export default function PrecioProducto({
+  selectedTable,
+  setAddProductos,
+  producto,
+}) {
   const modificarPrecio = (producto, precio) => {
     const nuevoPrecio = precio;
     if (nuevoPrecio !== null) {
@@ -25,7 +29,7 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
           }
         )
         .then(() => {
-          setNuevo((prevNuevo) =>
+          setAddProductos((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
                 ? { ...pro, precio_venta: precio }
@@ -48,7 +52,7 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
       value={producto.precio_venta !== undefined ? producto.precio_venta : ""}
       onChange={(e) => {
         const nuevoPrecio = parseInt(e.target.value);
-        setNuevo((prevAddProducto) =>
+        setAddProductos((prevAddProducto) =>
           prevAddProducto.map((prod) =>
             prod.producto_id === producto.producto_id
               ? {
@@ -64,7 +68,7 @@ export default function PrecioProducto({ selectedTable, setNuevo, producto }) {
   );
 }
 PrecioProducto.propTypes = {
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   producto: PropTypes.shape({
     producto_id: PropTypes.number.isRequired,
     nombre: PropTypes.string.isRequired,

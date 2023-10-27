@@ -3,14 +3,18 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { localURL } from "../conexion";
 
-export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
+export default function RestarCantidad({
+  producto,
+  setAddProductos,
+  selectedTable,
+}) {
   const eliminarProductoCarrito = (productoId) => {
     axios
       .delete(
         `http://${localURL}:3000/pedido/existe/${selectedTable}/${productoId}`
       )
       .then(() => {
-        setNuevo((prevNuevo) =>
+        setAddProductos((prevNuevo) =>
           prevNuevo.filter((producto) => producto.producto_id !== productoId)
         );
       })
@@ -31,7 +35,7 @@ export default function RestarCantidad({ producto, setNuevo, selectedTable }) {
           }
         )
         .then(() => {
-          setNuevo((prevNuevo) =>
+          setAddProductos((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
                 ? { ...pro, cantidad: nuevaCantidad }
@@ -62,6 +66,6 @@ RestarCantidad.propTypes = {
     nombre: PropTypes.string.isRequired,
     cantidad: PropTypes.number.isRequired,
   }).isRequired,
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   selectedTable: PropTypes.number.isRequired,
 };

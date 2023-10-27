@@ -82,7 +82,7 @@ const Registro = () => {
 
     axios
       .post(`http://${localURL}:3000/user/register`, dataToSend)
-      .then((response) => {
+      .then(() => {
         resetForm();
         handleSnackbarOpen("Usuario registrado exitosamente", "success");
       })

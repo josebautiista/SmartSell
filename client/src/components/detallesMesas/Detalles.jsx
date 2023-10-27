@@ -52,7 +52,7 @@ const Categorias = styled(Paper)`
 export const Detalles = ({ idMesa }) => {
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
-  const [nuevo, setNuevo] = useState([]);
+  const [addProductos, setAddProductos] = useState([]);
   const [selectedTable, setSelectedTable] = useState(idMesa);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export const Detalles = ({ idMesa }) => {
       .get(`http://${localURL}:3000/pedido/${selectedTable}`)
       .then(({ data }) => {
         const productos = data.filter(({ cantidad }) => cantidad > 0);
-        setNuevo(productos);
+        setAddProductos(productos);
       })
       .catch((error) => {
         console.error("Error al obtener productos de la mesa:", error);
@@ -105,7 +105,7 @@ export const Detalles = ({ idMesa }) => {
               }
             )
             .then(() => {
-              setNuevo((prevNuevo) =>
+              setAddProductos((prevNuevo) =>
                 prevNuevo.map((producto) =>
                   producto.producto_id === productoEnCarrito.producto_id
                     ? { ...producto, cantidad: nuevaCantidad }
@@ -127,7 +127,7 @@ export const Detalles = ({ idMesa }) => {
               cantidad: 1,
             })
             .then(() => {
-              setNuevo((prevNuevo) => [
+              setAddProductos((prevNuevo) => [
                 ...prevNuevo,
                 { ...producto, cantidad: 1 },
               ]);
@@ -158,14 +158,14 @@ export const Detalles = ({ idMesa }) => {
       <Encabezado
         setSelectedTable={setSelectedTable}
         selectedTable={selectedTable}
-        nuevo={nuevo}
+        addProductos={addProductos}
       ></Encabezado>
 
       <DivContenedor>
         <Izquierdo
           agregarProducto={agregarProducto}
-          setNuevo={setNuevo}
-          nuevo={nuevo}
+          setAddProductos={setAddProductos}
+          addProductos={addProductos}
           selectedTable={selectedTable}
           formatNumber={formatNumber}
           categorias={categorias}

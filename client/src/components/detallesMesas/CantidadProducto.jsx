@@ -24,7 +24,7 @@ const InputCantidad = styled.input`
 
 export default function CantidadProducto({
   selectedTable,
-  setNuevo,
+  setAddProductos,
   producto,
   agregarProducto,
 }) {
@@ -39,7 +39,7 @@ export default function CantidadProducto({
           }
         )
         .then(() => {
-          setNuevo((prevNuevo) =>
+          setAddProductos((prevNuevo) =>
             prevNuevo.map((pro) =>
               pro.producto_id === producto.producto_id
                 ? { ...pro, cantidad: nuevaCantidad }
@@ -58,7 +58,7 @@ export default function CantidadProducto({
   return (
     <DivCantidad>
       <RestarCantidad
-        setNuevo={setNuevo}
+        setAddProductos={setAddProductos}
         selectedTable={selectedTable}
         producto={producto}
       ></RestarCantidad>
@@ -67,7 +67,7 @@ export default function CantidadProducto({
         value={producto.cantidad === 0 ? "" : producto.cantidad}
         onChange={(e) => {
           const nuevaCantidad = parseInt(e.target.value, 10) || 0;
-          setNuevo((prevAddProducto) =>
+          setAddProductos((prevAddProducto) =>
             prevAddProducto.map((pro) =>
               pro.producto_id === producto.producto_id
                 ? { ...pro, cantidad: nuevaCantidad }
@@ -88,7 +88,7 @@ export default function CantidadProducto({
 }
 CantidadProducto.propTypes = {
   selectedTable: PropTypes.number.isRequired,
-  setNuevo: PropTypes.func.isRequired,
+  setAddProductos: PropTypes.func.isRequired,
   producto: PropTypes.shape({
     producto_id: PropTypes.number.isRequired,
     nombre: PropTypes.string.isRequired,
